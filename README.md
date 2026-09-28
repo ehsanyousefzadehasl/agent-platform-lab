@@ -12,6 +12,8 @@ The project will progressively add:
 
 ## Learning notes
 
+### Unit 1: Setup and basic definition
+
 An AI agent combines:
 
 1. a model that selects actions;
@@ -36,3 +38,38 @@ Short answer:
 A normal request produces a response once. An agent can iteratively select tools, observe their results, update its state, and continue until it completes a task or reaches a stopping condition.
 ```
 
+### Unit 2: Installable package and CLI
+
+**pyproject.toml** defines project metadata, dependencies, build configuration, and executable commands. The src/ layout prevents accidental imports from the repository root.
+
+```
+The [project.scripts] entry creates the agent-platform terminal command.
+```
+
+The project uses the `src/` layout so application imports come from the installed
+package rather than accidentally resolving against files in the repository root.
+
+`pyproject.toml` provides one place for package metadata, dependencies, build
+configuration, test configuration, and CLI entry points.
+
+
+```
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
+python -m pytest
+agent-platform "inspect the repository"
+```
+
+
+Question:
+
+```
+Why use an installable package instead of running loose Python scripts?
+```
+
+Answer:
+
+```
+It provides reproducible dependencies, stable imports, testable modules, and a defined command-line interface suitable for deployment.
+```

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-platform-lab"
+version = "0.1.0"
+description = "A small platform for running, observing, and evaluating AI coding agents."
+readme = "README.md"
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+agent-platform = "agent_platform.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
