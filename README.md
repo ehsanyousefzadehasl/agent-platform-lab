@@ -53,7 +53,7 @@ package rather than accidentally resolving against files in the repository root.
 configuration, test configuration, and CLI entry points.
 
 
-```
+```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
@@ -61,6 +61,14 @@ python -m pytest
 agent-platform "inspect the repository"
 ```
 
+In Linux/ Mac, it is different:
+
+```
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[dev]"
+python -m pytest
+```
 
 Question:
 
