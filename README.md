@@ -65,6 +65,32 @@ Agent = an LLM that can decide to use tools while working toward a task.
 
 In the next step, the question that comes up is what a tool is?
 
+A tool is a function that an agent can call to interact with something outside the LLM. For example for our need for the earlier example:
+
+```python
+# Source - https://stackoverflow.com/a/3207973
+# Posted by pycruft, modified by community. See post 'Timeline' for change history
+# Retrieved 2026-10-19, License - CC BY-SA 4.0
+
+from os import listdir
+from os.path import isfile, join
+
+
+def list_files(mypath):
+    onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+    return onlyfiles
+```
+
+So, to wrapup the fundamental concept here, we can sum it as follows:
+
+```
+- LLM: Decides which tool to use.
+- Tool: Performs the actual operation.
+- Agent: Coordinates the process.
+```
+
+
+
 MCP provides a standard interface through which applications can expose tools and
 context to an AI agent.
 
