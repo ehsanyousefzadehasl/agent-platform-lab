@@ -14,12 +14,56 @@ The project will progressively add:
 
 ### Unit 1: Setup and basic definition
 
+We hear a lot about agents these days. What is an agent? This question is the first one that I ask to enter this world! The best description that I find easy to undertstand is
+
+```
+Agent = An LLM that can decide to use tools while working toward a task
+```
+
+Then after that description the following formal definition makes a lot of sense that:
+
 An AI agent combines:
 
-1. a model that selects actions;
+1. an LLM model that selects actions;
 2. instructions defining its objective and constraints;
 3. tools for interacting with external systems;
 4. an execution loop that observes results and chooses the next action.
+
+
+I personally need solid examples to develop intuitions about concepts, so then I can feel and be confident about what I learned. To repect my own learning tradition, I find the following example very clarifying the concept.
+
+If we have only an LLM then we will have the following interaction with it:
+
+```
+User: What files are in (a specific) folder on my local computer?
+LLM: I do not know!
+```
+
+This is because, the LLM generates text based on what you gave it.
+
+An agent adds the ability for the LLM to take actions using tools.
+
+```
+User: asks the question that we saw earlier :D
+ ↓
+LLM
+ ↓
+decides: "I need to inspect the folder"
+ ↓
+calls a tool for example: list_files()
+ ↓
+gets the result from that tool
+ ↓
+LLM: generates repsonse based on the query and the results from that tool
+ ↓
+Answer
+```
+
+```
+Agent = an LLM that can decide to use tools while working toward a task.
+```
+
+In the next step, the question that comes up is what a tool is?
 
 MCP provides a standard interface through which applications can expose tools and
 context to an AI agent.
@@ -81,3 +125,8 @@ Answer:
 ```
 It provides reproducible dependencies, stable imports, testable modules, and a defined command-line interface suitable for deployment.
 ```
+
+### Unit 3: Build a bounded agent loop
+
+An agent repeatedly asks a model for the next action until it produces a final answer. A turn limit prevents infinite or excessively expensive execution.
+
