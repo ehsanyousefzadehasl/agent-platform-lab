@@ -90,6 +90,26 @@ So, to wrapup the fundamental concept here, we can sum it as follows:
 ```
 
 
+In the next step, we reach to agent loop! This loops lets an LLM to make multiple decisions in an interactive way with tools and their results until it completes a task. For example, the user asks: "find TODOs in README.md"
+
+```
+1. LLM decides → read_file("README.md")
+2. Tool executes → returns file contents
+3. LLM examines contents
+4. LLM decides → return final answer
+5. Agent stops
+```
+
+Because after each tool execution, the LLM gets another opportunity to decide what to do next, which is called an action. For example an LLM can have tool action or final action.
+
+```
+Important: An Action describes a decision. It does not execute anything itself.
+```
+
+So, the agent loop takes care of that action and consumes it. The loop checks the action's type, and calls the appropriate tool.
+
+So, here we get to **tool executor**.
+
 
 MCP provides a standard interface through which applications can expose tools and
 context to an AI agent.
