@@ -12,60 +12,84 @@ The project will progressively add:
 
 ## Learning notes
 
-### Unit 1: Setup and basic definition
+### Unit 1: Basics
 
-We hear a lot about agents these days. What is an agent? This question is the first one that I ask to enter this world! The best description that I find easy to undertstand is
+We hear a lot these buzz words nowadays, "agents," "LLMs," ...
 
-```
-Agent = An LLM that can decide to use tools while working toward a task
-```
-
-Then after that description the following formal definition makes a lot of sense that:
-
-An AI agent combines:
-
-1. an LLM model that selects actions;
-2. instructions defining its objective and constraints;
-3. tools for interacting with external systems;
-4. an execution loop that observes results and chooses the next action.
+So, **What is an agent?** This is the first question that I ask for entering this new realm! The easiest-to-understand description that I have found so far is:
 
 
-I personally need solid examples to develop intuitions about concepts, so then I can feel and be confident about what I learned. To repect my own learning tradition, I find the following example very clarifying the concept.
+>An agent is an LLM that can decide to use tools while working toward a task
 
-If we have only an LLM then we will have the following interaction with it:
 
-```
-User: What files are in (a specific) folder on my local computer?
-LLM: I do not know!
-```
+And an *AI* agent combines:
+
+>1. An **LLM** model that `selects` **actions**;
+>2. **Instructions** defining its objective and constraints;
+>3. **Tools** for interacting with external systems;
+>4. An **execution loop** that `observes` *results* and chooses the next action.
+
+
+Here, there is a delicate distinction between **instructions** and **prompts**. We have heard prompt, promptong, prompt engineering, which is delicately different than instructions. 
+
+A **prompt** is the input text or messages provided to an LLM, which is given by the user. However, instructions are the part that tells the LLM how to behave, what its role is, and what contraints to follow, which are usually defined by the developer. For example the following one shows instructions for the agent:
+
+>instructions = """
+>You are a repository assistant.
+>Help users understand their code.
+>Use available tools to inspect files.
+>Never modify files without approval.
+>"""
+
+And this one is an user prompt:
+
+>user_prompt = "Find all TODOs in this repository."
+
+
+The LLM receives both and uses them to decide what to do.
+
+One important distinction: instructions influence the LLM's behavior, but **security restrictions** must still be enforced in **Python**, as we will see later.
+
+
+
+I personally prefer seeing good practical examples to build intuitions about concepts. To follow that tradition, Let's consider a practical and detailed example for understanding an agent's distinctino from a bare LLM.
+
+Consider the case, we have an LLM and the following question is prompted to it:
+
+
+>User: What files exist in my Documents folder?
+>LLM: I do not know!
+
 
 This is because, the LLM generates text based on what you gave it.
 
-An agent adds the ability for the LLM to take actions using tools.
+An agent adds the ability for the LLM to take actions using tools and get more data into its response generation. So, if we have an agent, the following process will continue, so we will get the response we want.
 
-```
-User: asks the question that we saw earlier :D
- ↓
-LLM
- ↓
-decides: "I need to inspect the folder"
- ↓
-calls a tool for example: list_files()
- ↓
-gets the result from that tool
- ↓
-LLM: generates repsonse based on the query and the results from that tool
- ↓
-Answer
-```
 
-```
-Agent = an LLM that can decide to use tools while working toward a task.
-```
+>User: asks the same question
+> ↓
+>LLM
+> ↓
+>`decides`: "I need to inspect that folder"
+> ↓
+>calls **a tool**, for example: list_files(), a python module
+> ↓
+>gets the result from that tool
+> ↓
+>LLM: generates repsonse based on the query and the results from that tool
+> ↓
+>**Answer**
 
-In the next step, the question that comes up is what a tool is?
+So, now it is clear for us why:
 
-A tool is a function that an agent can call to interact with something outside the LLM. For example for our need for the earlier example:
+>Agent is an LLM that can decide to use tools while working toward a task.
+
+
+In the next step, the question that comes up is: what is actually a **tool**?
+
+>A tool is a function that an agent can call to interact with something outside the LLM. 
+
+For example for our need for the earlier example:
 
 ```python
 # Source - https://stackoverflow.com/a/3207973
@@ -81,34 +105,33 @@ def list_files(mypath):
     return onlyfiles
 ```
 
-So, to wrapup the fundamental concept here, we can sum it as follows:
-
-```
-- LLM: Decides which tool to use.
-- Tool: Performs the actual operation.
-- Agent: Coordinates the process.
-```
+So, to wrapup what we learned so far:
 
 
-In the next step, we reach to agent loop! This loops lets an LLM to make multiple decisions in an interactive way with tools and their results until it completes a task. For example, the user asks: "find TODOs in README.md"
+>- LLM: Decides which tool to use.
+>- Tool: Performs the actual operation.
+>- Agent: Coordinates the process.
 
-```
-1. LLM decides → read_file("README.md")
-2. Tool executes → returns file contents
-3. LLM examines contents
-4. LLM decides → return final answer
-5. Agent stops
-```
+
+In the next step, we reach to the **agent loop**! This loop lets an LLM to make multiple decisions in an interactive way with tools and their results until it completes a task. For example, the user asks: "find TODOs in my README file in the files I shared with you," then:
+
+
+>1. LLM decides → read_file("README.md")
+>2. Tool executes → returns file contents
+>3. LLM examines contents
+>4. LLM decides → return final answer
+>5. Agent stops
+
 
 Because after each tool execution, the LLM gets another opportunity to decide what to do next, which is called an action. For example an LLM can have tool action or final action.
 
-```
-Important: An Action describes a decision. It does not execute anything itself.
-```
+
+>An Action describes a decision. It does not execute anything itself.
+
 
 So, the agent loop takes care of that action and consumes it. The loop checks the action's type, and calls the appropriate tool.
 
-So, here we get to **tool executor**.
+So, now the next concept in this constellation is **tool executor**.
 
 A tool executor is the part of the agent loop that runs the tool requested by the LLM. For example"
 
@@ -122,9 +145,9 @@ if action.kind == "tool":
 
 Then, the result of the tool is passed to the LLM via the agent loop.
 
-```
-One important detail: The executor should only allow approved tools (tool registery), not arbitrary functions (like Python functions generated by LLM, so we just give it access to execute them! Umm does not sound secure!).
-```
+
+>The executor should only allow approved tools (via **tool registery**), not arbitrary functions (like Python functions generated by LLM. We mudt never give permission for executing those generated functions! Letting LLM execute its generated scripts does not sound secure at all!).
+
 
 The LLM might request a dangerous operation, such as deleting files. The tool executor acts as a controlled boundary, allowing only permitted operations.
 
@@ -133,34 +156,52 @@ A tool registry is a collection of tools that our agent is allowed to use. A reg
 
 For remaining on the secure and safe side of the story, besides tool registry, defining a workspace boundary is a necessity.
 
-```
-Important: The restriction must be enforced by the tool's code, not merely described in the LLM's instructions. Stronger isolation may also require operating-system permissions or sandboxing.
-```
+
+>The restriction must be enforced by the tool's code, not merely described in the LLM's instructions. Stronger isolation may also require operating-system permissions or sandboxing.
+
 
 And security should never ever be handled via prompting:
 
-```
-Security must be enforced by code, not just by prompts.
-```
+
+>Security must be enforced by code, not just by prompts.
+
+Here is where MCP comes into the game.
+
+#### Model Concept Protocol (MCP)
+
+MCP is a standard protocol that lets AI applications connect to external tools and data sources.
+
+Without MCP, we might integrate each tool directly into our agent. With MCP, tools can be provided by a separate MCP server.
+
+
+![MCP](assets/MCP.png)
+
+Why use MCP? We can connect different agents to the same tools through a standardized interface rather than building a custom integration for each one.
+
+>MCP doesn't automatically make tools safe; **workspace restrictions and permissions** still matter.
+
+There are two important components:
+
+>MCP Server: Exposes tools
+>MCP Client: Connects to the server, discovers **available tools**, and *requests* their execution
 
 
 
-MCP provides a standard interface through which applications can expose tools and
-context to an AI agent.
 
-MCP separates supplying tools and context from the model interaction itself, which is why it fits this platform design.
 
-First interview question:
 
-```
-What distinguishes an AI agent from a normal LLM request?
-```
 
-Short answer:
 
-```
-A normal request produces a response once. An agent can iteratively select tools, observe their results, update its state, and continue until it completes a task or reaches a stopping condition.
-```
+
+
+
+
+
+
+
+
+
+
 
 ### Unit 2: Installable package and CLI
 
